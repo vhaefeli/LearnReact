@@ -5,7 +5,8 @@ import { useHistory } from 'react-router-dom';
 import PokemonService from '../services/pokemon-service';
   
 type Props = {
-  pokemon: Pokemon
+  pokemon: Pokemon,
+  isEditForm: boolean
 };
 
 type Field = {
@@ -15,15 +16,17 @@ type Field = {
 }
   
 type Form = {
+    picture: Field,
     name: Field,
     hp: Field,
     cp: Field,
     types: Field
 }
 
-const PokemonForm: FunctionComponent<Props> = ({pokemon}) => {
+const PokemonForm: FunctionComponent<Props> = ({pokemon, isEditForm}) => {
 
     const [form, setForm] = useState<Form>({
+        picture: { value: pokemon.picture, isValid: true},
         name: { value: pokemon.name, isValid: true},
         hp: {value: pokemon.hp, isValid: true},
         cp: { value: pokemon.cp, isValid: true},
@@ -67,21 +70,31 @@ const history = useHistory();
     setForm({...form, ...{types: newField}});
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const isFormValid = validateForm();
-
-    if(isFormValid) {
-      pokemon.name = form.name.value;
-      pokemon.hp = form.hp.value;
-      pokemon.cp = form.cp.value;
-      pokemon.types = form.types.value;
-      PokemonService.updatePokemon(pokemon).then(() => history.push(`/pokemons/${pokemon.id}`));
-    }
+  const isAddForm = () => {
+    return !isEditForm;
   }
 
   const validateForm =() => {
     let newForm: Form = form;
+
+    // Validate url
+    if(isAddForm()) {
+      const start = "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/";
+      const end = ".png";
+      const regex = new RegExp(`^${start}\\d{3}${end}$`);
+
+      // if(!form.picture.value.startsWith(start) || !form.picture.value.endsWith(end)) {
+      if(!regex.test(form.picture.value)) {
+        const errorMsg: string = `L'url de l'image doit commencer par ${start} avoir un nombre à 3 chiffres et finir par ${end}`;
+        const newField: Field = { value: form.picture.value, error: errorMsg, isValid: false };
+        newForm = {...newForm, ...{picture: newField}};
+        console.log("erreur url");
+        console.log(newField.isValid);
+      } else {
+        const newField: Field = { value: form.picture.value, error: '', isValid: true };
+        newForm = {...newForm, ...{ picture: newField }};
+      }
+    }
 
     // Validate name
     if(!/^[a-zA-Zàéè ]{3,25}$/.test(form.name.value)) {
@@ -112,9 +125,8 @@ const history = useHistory();
       const newField: Field = { value: form.cp.value, error: '', isValid: true };
       newForm = {...newForm, ...{cp: newField}};
     }
-
     setForm(newForm);
-    return newForm.name.isValid && newForm.hp.isValid && newForm.cp.isValid;
+    return newForm.picture.isValid && newForm.name.isValid && newForm.hp.isValid && newForm.cp.isValid;
   } 
 
   const isTypesValid = (type: string): boolean => {
@@ -130,6 +142,30 @@ const history = useHistory();
     return true;
   }
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const isFormValid = validateForm();
+
+    if(isFormValid) {
+      pokemon.picture = form.picture.value;
+      pokemon.name = form.name.value;
+      pokemon.hp = form.hp.value;
+      pokemon.cp = form.cp.value;
+      pokemon.types = form.types.value;
+
+      isEditForm ? updatePokemon() : addPokemon();
+    }
+  }
+
+  const addPokemon = () => {
+    PokemonService.addPokemon(pokemon).then(() => history.push('/pokemons'));
+  }
+
+  const updatePokemon = () => {
+    PokemonService.updatePokemon(pokemon).then(() => history.push(`/pokemons/${pokemon.id}`));
+  }
+
+
   const deletePokemon = () => {
     PokemonService.deletePokemon(pokemon).then(() => history.push('/pokemons'));
   }
@@ -139,14 +175,24 @@ const history = useHistory();
       <div className="row">
         <div className="col s12 m8 offset-m2">
           <div className="card hoverable"> 
+            {isEditForm && (
             <div className="card-image">
               <img src={pokemon.picture} alt={pokemon.name} style={{width: '250px', margin: '0 auto'}}/>
               <span className="btn-floating halfway-fab waves-effect waves-light">
                 <i onClick={deletePokemon} className='material-icons'>delete</i>
               </span>
             </div>
+            )}
             <div className="card-stacked">
               <div className="card-content">
+                {/* Pokemon picture */}
+                {isAddForm() && (
+                <div className="form-group">
+                  <label htmlFor="name">Image</label>
+                  <input id="picture" name="picture" type="text" className="form-control" value={form.picture.value} onChange={e =>handleInputChange(e)}></input>
+                  {form.picture.error && <div className="card-panel red accent-1">{form.picture.error}</div>}
+                </div>
+                )}
                 {/* Pokemon name */}
                 <div className="form-group">
                   <label htmlFor="name">Nom</label>

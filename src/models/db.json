@@ -2,7 +2,7 @@
   "pokemons": [
     {
       "id": "1",
-      "name": "Bulbi",
+      "name": "Bulbizarre",
       "hp": 25,
       "cp": 5,
       "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/001.png",
@@ -18,7 +18,8 @@
       "cp": 6,
       "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/004.png",
       "types": [
-        "Feu"
+        "Feu",
+        "Electrik"
       ]
     },
     {
@@ -81,7 +82,8 @@
       "cp": 4,
       "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/023.png",
       "types": [
-        "Poison"
+        "Poison",
+        "Psy"
       ]
     },
     {
@@ -122,6 +124,52 @@
       "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/037.png",
       "types": [
         "Feu"
+      ]
+    },
+    {
+      "id": "1705591083934",
+      "hp": 100,
+      "cp": 10,
+      "name": "bouboule",
+      "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/100.png",
+      "types": [
+        "Normal",
+        "Eau",
+        "Combat"
+      ]
+    },
+    {
+      "id": "1705591598800",
+      "hp": 100,
+      "cp": 10,
+      "name": "blup",
+      "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/097.png",
+      "types": [
+        "Normal",
+        "Plante"
+      ]
+    },
+    {
+      "id": "1705592773963",
+      "hp": 100,
+      "cp": 10,
+      "name": "Mystere",
+      "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/042.png",
+      "types": [
+        "Electrik",
+        "Fée",
+        "Vol"
+      ]
+    },
+    {
+      "id": "1705654359460",
+      "hp": 100,
+      "cp": 10,
+      "name": "Vasouille",
+      "picture": "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/089.png",
+      "types": [
+        "Normal",
+        "Eau"
       ]
     }
   ]
