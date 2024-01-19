@@ -4,14 +4,14 @@ import PokemonForm from '../components/pokemon-form';
 import Pokemon from '../models/pokemon';
 import PokemonService from '../services/pokemon-service';
  
-type Params = { id: number };
+type Params = { id: string };
   
 const PokemonEdit: FunctionComponent<RouteComponentProps<Params>> = ({ match }) => {
     
   const [pokemon, setPokemon] = useState<Pokemon|null>(null);
   
   useEffect(() => {
-    PokemonService.getPokemon(match.params.id).then(pokemon => setPokemon(pokemon));
+    PokemonService.getPokemon(+match.params.id).then(pokemon => setPokemon(pokemon));
   }, [match.params.id]);
     
   return (
